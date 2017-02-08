@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/SuperPaintman/request-id">
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="js/doc.js"></script>
+  <title>README - github.com/SuperPaintman/request-id</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li class="current"><a href="index.html">README</a></li>
+  </ul>
+
+  <ul>
+  
+  <li class="parent " data-id="github.com/SuperPaintman/request-id/RequestID" data-name="requestid">
+      <a href="RequestID.html">RequestID</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/SuperPaintman/request-id/RequestID/Handler" data-name="requestid::handler">
+      <a href="RequestID/Handler.html">Handler</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1>request\_id</h1>
+
+<p>[![Linux Build][travis-image]][travis-url]
+[![Shards version][shards-image]][shards-url]</p>
+
+<p>Middleware for generates / pick up a unique request ID for <strong>Crystal</strong> servers.</p>
+
+<p>This module set response HTTP Header like this:</p>
+
+<blockquote>X-Request-ID: 753a468b-4179-40c4-bb58-ff508cb39d67</blockquote>
+
+<h2>Installation</h2>
+
+<p>Add this to your application's <code>shard.yml</code>:</p>
+
+<pre><code class='language-yaml'>dependencies:
+  request_id:
+    github: SuperPaintman/request-id</code></pre>
+
+<hr/><h2>Usage</h2>
+
+<h3>With pure Crystal server</h3>
+
+<pre><code class='language-crystal'><span class="k">require</span> <span class="s">&quot;request_id&quot;</span>
+<span class="k">require</span> <span class="s">&quot;http/server&quot;</span>
+
+server <span class="o">=</span> <span class="t">HTTP</span><span class="t">::</span><span class="t">Server</span>.<span class="k">new</span>(<span class="s">&quot;0.0.0.0&quot;</span>, <span class="n">8080</span>,
+  [
+    <span class="t">RequestID</span><span class="t">::</span><span class="t">Handler</span>.<span class="k">new</span>
+  ]) <span class="k">do</span> <span class="o">|</span>context<span class="o">|</span>
+  context.response.content_type <span class="o">=</span> <span class="s">&quot;text/plain&quot;</span>
+  context.response.print <span class="s">&quot;Hello request id&#33;&quot;</span>
+<span class="k">end</span>
+
+server.listen</code></pre>
+
+<h3>With Kemal</h3>
+
+<pre><code class='language-crystal'><span class="k">require</span> <span class="s">&quot;request_id&quot;</span>
+<span class="k">require</span> <span class="s">&quot;kemal&quot;</span>
+
+add_handler <span class="t">RequestID</span><span class="t">::</span><span class="t">Handler</span>.<span class="k">new</span>
+
+get <span class="s">&quot;/&quot;</span> <span class="k">do</span> <span class="o">|</span>env<span class="o">|</span>
+  <span class="s">&quot;Hello request id&#33;&quot;</span>
+<span class="k">end</span>
+
+<span class="t">Kemal</span>.run</code></pre>
+
+<h3>Custom Generator</h3>
+
+<blockquote>By default: `uuid`</blockquote>
+
+<pre><code class='language-crystal'><span class="k">require</span> <span class="s">&quot;request_id&quot;</span>
+<span class="k">require</span> <span class="s">&quot;http/server&quot;</span>
+
+<span class="k">class</span> <span class="t">CustomRequestIDHandler</span> <span class="o"><</span> <span class="t">RequestID</span><span class="t">::</span><span class="t">Handler</span>
+  <span class="k">def</span> <span class="m">generator</span>()
+    <span class="s">&quot;custom_request_id_generator&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+server <span class="o">=</span> <span class="t">HTTP</span><span class="t">::</span><span class="t">Server</span>.<span class="k">new</span>(<span class="s">&quot;0.0.0.0&quot;</span>, <span class="n">8080</span>,
+  [
+    <span class="t">CustomRequestIDHandler</span>.<span class="k">new</span>
+  ]) <span class="k">do</span> <span class="o">|</span>context<span class="o">|</span>
+  context.response.content_type <span class="o">=</span> <span class="s">&quot;text/plain&quot;</span>
+  context.response.print <span class="s">&quot;Hello request id&#33;&quot;</span>
+<span class="k">end</span>
+
+server.listen</code></pre>
+
+<hr/><h2>Examples</h2>
+
+<h3>Random ID</h3>
+
+<pre><code class='language-sh'>curl -I localhost:8080
+# HTTP/1.1 200 OK
+# X-Request-ID: 5e3df631-85e6-4eaf-bb1c-68375291332e</code></pre>
+
+<h3>Set ID via Header</h3>
+
+<pre><code class='language-sh'>curl -I -H 'X-Request-ID:4ce4089d-e01e-4c7f-b35c-2ca383c7abf5' localhost:8080
+# HTTP/1.1 200 OK
+# X-Request-ID: 4ce4089d-e01e-4c7f-b35c-2ca383c7abf5</code></pre>
+
+<hr/><h2>Test</h2>
+
+<pre><code class='language-sh'>crystal spec</code></pre>
+
+<hr/><h2>Contributing</h2>
+
+<ol><li>Fork it (&lt;https://github.com/SuperPaintman/request-id/fork>)</li><li>Create your feature branch (<code>git checkout -b feature/<feature_name></code>)</li><li>Commit your changes (<code>git commit -am 'Added some feature'</code>)</li><li>Push to the branch (<code>git push origin feature/<feature_name></code>)</li><li>Create a new Pull Request</li></ol>
+
+<hr/><h2>Contributors</h2>
+
+<ul><li><a href="https://github.com/SuperPaintman" target="_blank">SuperPaintman</a> SuperPaintman - creator, maintainer</li></ul>
+
+<hr/><h2>API</h2>
+
+<p>[Docs][docs-url]</p>
+
+<hr/><h2>Changelog</h2>
+
+<p>[Changelog][changelog-url]</p>
+
+<hr/><h2>License</h2>
+
+<p>[MIT][license-url]</p>
+
+<p>[license-url]: LICENSE
+[changelog-url]: CHANGELOG.md
+[docs-url]: https://superpaintman.github.io/request-id/
+[travis-image]: https://img.shields.io/travis/SuperPaintman/request-id/master.svg?label=linux
+[travis-url]: https://travis-ci.org/SuperPaintman/request-id
+[shards-image]: https://img.shields.io/github/tag/superpaintman/request-id.svg?label=shards
+[shards-url]: https://github.com/superpaintman/request-id</p>
+
+
+</div>
+</body>
+</html>
