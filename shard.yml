@@ -1,0 +1,10 @@
+name: request_id
+version: 0.1.0
+
+authors:
+  - SuperPaintman <SuperPaintmanDeveloper@gmail.com>
+
+description: |
+  Middleware for generates / pick up a unique request ID for Crystal servers.
+
+license: MIT
