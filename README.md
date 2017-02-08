@@ -68,7 +68,7 @@ require "request_id"
 require "http/server"
 
 class CustomRequestIDHandler < RequestID::Handler
-  def generator()
+  def generator
     "custom_request_id_generator"
   end
 end
