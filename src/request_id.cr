@@ -11,7 +11,7 @@ module RequestID
     end
 
     def generator : String
-      UUID.random
+      UUID.random().to_s
     end
 
     def call(context)
