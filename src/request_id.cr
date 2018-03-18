@@ -1,5 +1,5 @@
 require "http/server/handler"
-require "secure_random"
+require "uuid"
 
 require "./request_id/*"
 
@@ -11,7 +11,7 @@ module RequestID
     end
 
     def generator : String
-      SecureRandom.uuid
+      UUID.random.to_s
     end
 
     def call(context)
